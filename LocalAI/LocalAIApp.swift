@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import AppKit
 
 @main
 struct LocalAIApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                
         }
+        .windowStyle(HiddenTitleBarWindowStyle())
     }
 }

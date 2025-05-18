@@ -6,6 +6,22 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C4677E0D2DBE7620006D9BBD /* PythonKit in Frameworks */ = {isa = PBXBuildFile; productRef = C4677E0C2DBE7620006D9BBD /* PythonKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C48346462DD359CE00908683 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		C4677DF92DBE7555006D9BBD /* LocalAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocalAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4677E0D2DBE7620006D9BBD /* PythonKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,6 +72,7 @@
 				C4677DF52DBE7555006D9BBD /* Sources */,
 				C4677DF62DBE7555006D9BBD /* Frameworks */,
 				C4677DF72DBE7555006D9BBD /* Resources */,
+				C48346462DD359CE00908683 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -65,6 +83,7 @@
 			);
 			name = LocalAI;
 			packageProductDependencies = (
+				C4677E0C2DBE7620006D9BBD /* PythonKit */,
 			);
 			productName = LocalAI;
 			productReference = C4677DF92DBE7555006D9BBD /* LocalAI.app */;
@@ -94,6 +113,9 @@
 			);
 			mainGroup = C4677DF02DBE7555006D9BBD;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C4677E0B2DBE7620006D9BBD /* XCRemoteSwiftPackageReference "PythonKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C4677DFA2DBE7555006D9BBD /* Products */;
 			projectDirPath = "";
@@ -258,6 +280,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We use speech recognition to provide a more interactive and hands-free experience by allowing you to speak directly to the app for certain actions or features.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need access to your microphone to enable voice interactions and allow you to speak commands or provide input directly to the app.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -285,6 +309,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We use speech recognition to provide a more interactive and hands-free experience by allowing you to speak directly to the app for certain actions or features.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need access to your microphone to enable voice interactions and allow you to speak commands or provide input directly to the app.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -319,6 +345,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C4677E0B2DBE7620006D9BBD /* XCRemoteSwiftPackageReference "PythonKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pvieito/PythonKit.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C4677E0C2DBE7620006D9BBD /* PythonKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C4677E0B2DBE7620006D9BBD /* XCRemoteSwiftPackageReference "PythonKit" */;
+			productName = PythonKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C4677DF12DBE7555006D9BBD /* Project object */;
 }
