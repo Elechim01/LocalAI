@@ -18,32 +18,35 @@ struct ContentView: View {
     @State private var navigationRoute: NavigationRoute = .AIChat
     
     
+    
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnvisibility,sidebar: {
-            VStack(alignment: .leading) {
-                List(NavigationRoute.allCases,id:\.hashValue) { element in
-                    
-                    CustomButton(falseColor: element.getColor) {
-                        navigationRoute = element
-                    } label: {
-                        Text(element.name)
+            NavigationSplitView(columnVisibility: $columnvisibility,sidebar: {
+                VStack(alignment: .leading) {
+                    List(NavigationRoute.allCases,id:\.hashValue) { element in
+                        
+                        CustomButton(falseColor: element.getColor) {
+                            navigationRoute = element
+                        } label: {
+                            Text(element.name)
+                        }
+                        
                     }
-
                 }
-            }
-        }, detail: {
-            switch navigationRoute {
-            case .AIChat:
-                HomeView()
-                    .environment(speechToTextViewModel)
-                    .environment(contentViewModel)
-            case .Impostazioni:
-                Text("Impostazioni")
-            case .Voices:
-                Text("Voices")
-            }
-        })
-        .navigationSplitViewStyle(.balanced)
+            }, detail: {
+                switch navigationRoute {
+                case .AIChat:
+                    HomeView()
+                        .environment(speechToTextViewModel)
+                        .environment(contentViewModel)
+                case .Impostazioni:
+                  ModelScreen()
+                        .environment(contentViewModel)
+                case .Voices:
+                    Text("Voices")
+                }
+            })
+            .navigationSplitViewStyle(.balanced)
+        
     }
 
 }
@@ -64,7 +67,7 @@ enum NavigationRoute: CaseIterable {
         case .AIChat:
             return "AIChat"
         case .Impostazioni:
-            return "Impostazioni"
+            return "Modelli"
         case .Voices:
             return "Voices"
         }

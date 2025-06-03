@@ -19,7 +19,12 @@ import AVKit
     var textRequest = ""
     let coordinator: AppCordinatorProtocol
     var animatedText = AttributedString()
-    var listModel: String = ""
+    var listModel: [AIInternalModel] = []
+    var textAiColor: String {
+        get { UserDefaults.standard.string(forKey: "textAIColor") ?? "" }
+        set { UserDefaults.standard.set(newValue, forKey: "textAIColor") }
+    }
+    var selectedAIModel: AIInternalModel?
     
     init(coordinator: AppCordinatorProtocol) {
         self.coordinator = coordinator
@@ -66,6 +71,16 @@ import AVKit
     
      func callAI() {
       
+         guard let selectedAIModel = self.selectedAIModel,
+         let nameModel = selectedAIModel.nameModel else {
+            
+             statusLoading = "Modello Non Selezionato"
+             isLoading = false
+             textAI = ""
+             
+             return
+         }
+         
         statusLoading = "Controllo Ollama..."
         isLoading = true
         textAI = ""
@@ -93,7 +108,7 @@ import AVKit
             }
 
             
-            let response = await pythonRunner.callOllama(prompt: textRequest)
+            let response = await pythonRunner.callOllama(aiModelName: nameModel ,prompt: textRequest)
             let resultText = response?.description ?? "Errore: nessuna risposta"
 
             await MainActor.run {
@@ -126,7 +141,7 @@ import AVKit
                         brightness: 0.8,
                         alpha: 1)
                     
-                    newText[swiftRange].foregroundColor = Color(color)
+                    newText[swiftRange].foregroundColor = Color(hex: textAiColor) ?? Color(color)
                     newText[swiftRange].font = .system(size: 20, weight: .bold)
                 }
             }
@@ -142,10 +157,15 @@ import AVKit
             let models = await coreTerminal.ollamaListModel() ?? ""
             
             await MainActor.run {
-                self.listModel = models
-               // let row = models.split(separator: "\n").map({  String($0) })
-//                row.forEach { print($0) }
-//                self.listModel = row
+//                self.listModel = models
+                let row = models.split(separator: "\n").map({  String($0) })
+                
+                
+                var aiModel =  row.map ({ AIInternalModel(row: $0,header:row.first)})
+                
+                aiModel.removeFirst()
+                let setAIModel = Set(aiModel)
+                self.listModel = Array(setAIModel)
             }
         }
     }

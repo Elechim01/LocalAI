@@ -16,37 +16,53 @@ struct HomeView: View {
         @Bindable var model = contentViewModel
         VStack(spacing: 16) {
             // Aggiungi la vista SpeechToTextView con il binding
-            SpeechToTextView(transcript: $model.textRequest)
+            SpeechToTextView(transcript: $model.textRequest, nameAI: model.selectedAIModel?.nameModel ?? "")
                 .environment(speechToTextViewModel)
                 .frame(height: 250)
                 // Altezza personalizzabile
             
-            TextField("Text per AI", text: $model.textRequest)
+           /* TextField("Text per AI", text: $model.textRequest)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal)
+            */
+            
+            HStack {
+                Button(action: toggleRecord) {
+                    HStack {
+                        Image(systemName: speechToTextViewModel.isRecording ? "stop.fill" : "mic.fill")
+                        Text(speechToTextViewModel.isRecording ? "Stop" : "Start")
+                        
+                    }
+                    .padding()
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(PlainButtonStyle())
+                .background(
+                    speechToTextViewModel.isRecording ? Layout.RecordButton.stopRecordingColor : Layout.RecordButton.startRecordingColor
+                )
+                .cornerRadius(Layout.RecordButton.cornerRadius)
+                
             
             Button(action: {
                 guard !contentViewModel.textRequest.isEmpty, !speechToTextViewModel.isRecording else { return }
                 self.contentViewModel.callAI()
             }) {
                 HStack {
-                    if contentViewModel.isLoading {
-                        ProgressView()
-                    }
+                    
                     Text(contentViewModel.isLoading ? contentViewModel.statusLoading : "Invia alla AI")
                 }
+                .padding()
+                .contentShape(Rectangle())
             }
-            .padding()
             .buttonStyle(PlainButtonStyle())
             .background(Color.pink)
             .cornerRadius(10)
             .disabled(contentViewModel.textRequest.isEmpty || contentViewModel.isLoading || speechToTextViewModel.isRecording)
+            }
             
-//            Button(action: contentViewModel.loadLocalModels) {
-//                Text("Local Model")
-//            }
-            
-            Text(contentViewModel.listModel)
+            if contentViewModel.isLoading {
+                ProgressView()
+            }
             
             ScrollView {
                 Text(contentViewModel.animatedText)
@@ -66,6 +82,15 @@ struct HomeView: View {
         }
         .padding()
     }
+    
+    private func toggleRecord() {
+        if speechToTextViewModel.isRecording {
+            speechToTextViewModel.stopRecording()
+        } else {
+            speechToTextViewModel.startRecording()
+        }
+    }
+    
 }
 
 #Preview {

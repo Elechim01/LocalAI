@@ -11,10 +11,13 @@ import PythonKit
 class PythonRun: PythonRunProtocol {
     private let file: PythonObject?
 //    Nome AI
-    internal var assistantName: String = "assistente"
+     var assistantName: String = "assistente"
+   
 
     init() {
-        setenv("PYTHON_LIBRARY", "/Users/michelemanniello/.pyenv/versions/3.10.12/lib/libpython3.10.dylib",1)
+//        "/Users/michelemanniello/.pyenv/versions/3.10.12/lib/libpython3.10.dylib"
+        let pythonPathData = UserDefaults.standard.string(forKey: "pythonPath") ?? ""
+        setenv("PYTHON_LIBRARY",pythonPathData ,1)
         setenv("PYTHON_LOADER_LOGGING", "TRUE", 1)
         setenv("PYTHONIOENCODING", "utf-8", 1)
         setenv("LC_ALL", "it_IT.UTF-8", 1)
@@ -30,8 +33,8 @@ class PythonRun: PythonRunProtocol {
         self.file = Python.import("PythonCode")
     }
 
-    func callOllama(prompt: String) async -> PythonObject? {
-        return file?.call_ai(assistantName,prompt)
+    func callOllama(aiModelName: String,prompt: String) async -> PythonObject? {
+        return file?.call_ai(aiModelName,prompt)
     }
 
     func checkOllama() -> PythonObject? {

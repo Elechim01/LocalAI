@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-private enum Layout {
+ enum Layout {
     enum Container {
         static let background: Color = .black
         static let fontColor: Color = .white
@@ -28,19 +28,24 @@ private enum Layout {
 struct SpeechToTextView: View {
     
     @Binding var transcript: String
-   
+    var nameAI: String
     
     @Environment(SpeechToTextViewModel.self) private var viewModel:  SpeechToTextViewModel
     
     var body: some View {
-        
+        @Bindable var model = viewModel
         VStack(spacing: Layout.Container.spacing) {
-            Text("Text To Speech")
-                .font(.title2)
+            Text("Parla con l'AI \(nameAI)")
+                .font(.title)
             ScrollView {
-                Text(viewModel.transcript)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                TextEditor(text: $model.transcript)
+                        .padding(10)
+                        .frame(maxWidth: .infinity, minHeight: Layout.ScrollContainer.height)
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Layout.ScrollContainer.borderColor, lineWidth: Layout.ScrollContainer.borderWidth)
+                        )
             }
             .frame(height: Layout.ScrollContainer.height)
             .border(Layout.ScrollContainer.borderColor, width: Layout.ScrollContainer.borderWidth)
@@ -48,20 +53,6 @@ struct SpeechToTextView: View {
             .onChange(of: viewModel.transcript) {
                 self.transcript = $1
             }
-            
-            Button(action: toggleRecord) {
-                HStack {
-                    Image(systemName: viewModel.isRecording ? "stop.fill" : "mic.fill")
-                    Text(viewModel.isRecording ? "Stop" : "Start")
-                    
-                }
-            }
-            .padding()
-            .buttonStyle(PlainButtonStyle())
-            .background(
-                viewModel.isRecording ? Layout.RecordButton.stopRecordingColor : Layout.RecordButton.startRecordingColor
-            )
-            .cornerRadius(Layout.RecordButton.cornerRadius)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
@@ -69,16 +60,10 @@ struct SpeechToTextView: View {
         .foregroundStyle(Layout.Container.fontColor)
     }
     
-    private func toggleRecord() {
-        if viewModel.isRecording {
-            viewModel.stopRecording()
-        } else {
-            viewModel.startRecording()
-        }
-    }
+   
 }
 
 #Preview {
-    SpeechToTextView(transcript: .constant(""))
+    SpeechToTextView(transcript: .constant(""), nameAI: "assistente")
         .environment( SpeechToTextViewModel(speechToTextService:SpeechToTextServices()))
 }
