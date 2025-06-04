@@ -42,7 +42,8 @@ struct ContentView: View {
                   ModelScreen()
                         .environment(contentViewModel)
                 case .Voices:
-                    Text("Voices")
+                    VoicesScreen()
+                        .environment(contentViewModel)
                 }
             })
             .navigationSplitViewStyle(.balanced)

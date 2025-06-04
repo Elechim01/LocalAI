@@ -25,9 +25,13 @@ import AVKit
         set { UserDefaults.standard.set(newValue, forKey: "textAIColor") }
     }
     var selectedAIModel: AIInternalModel?
+    var voices: [AVSpeechSynthesisVoice] = []
+    private let synthesizer = AVSpeechSynthesizer()
+    var voiceSelected: AVSpeechSynthesisVoice?
     
     init(coordinator: AppCordinatorProtocol) {
         self.coordinator = coordinator
+        self.voiceSelected = AVSpeechSynthesisVoice(identifier: "com.apple.voice.enhanced.it-IT.Luca")
         startPython()
     }
     
@@ -117,7 +121,7 @@ import AVKit
                 self.isLoading = false
                
                 self.prepareInitialText()
-                self.coordinator.handleSpeech(text: resultText)
+                self.coordinator.handleSpeech(text: resultText, voice: self.voiceSelected)
 //                speechText(text: resultText)
             }
         }
@@ -171,9 +175,9 @@ import AVKit
     }
     
     
-    private func testVoci() {
+     func loadVoci() {
 //        let synthesizer = AVSpeechSynthesizer() // Unica istanza condivisa
-        let voices = AVSpeechSynthesisVoice.speechVoices().filter {
+        self.voices = AVSpeechSynthesisVoice.speechVoices().filter {
             $0.language == "it-IT"
         }
         voices.forEach { v in
@@ -181,6 +185,8 @@ import AVKit
                 print("Lingua: \(v.language), Nome: \(v.name), Identificatore: \(v.identifier)")
             }
         }
+        
+        
        
         /*
         for (index, voice) in voices.enumerated() {
@@ -207,9 +213,20 @@ import AVKit
          */
     }
     
-   
-    
-    
-   
-    
+    func speachVoice(voice: AVSpeechSynthesisVoice) {
+        let phrase = "Ciao sono \(voice.name.replacingOccurrences(of: " (Premium)", with: "")). Sono qui per parlare e leggere i messaggi."
+        let utterance = AVSpeechUtterance(string: phrase)
+        utterance.voice = voice
+        
+        // Configurazione ottimale
+        utterance.rate = 0.5
+        utterance.pitchMultiplier = 1.0
+        utterance.volume = 0.8
+        
+        // Controllo aggiuntivo sulla compatibilità
+        print("Test voce: \(voice.name)")
+        DispatchQueue.global(qos: .utility).async {
+            self.synthesizer.speak(utterance)
+        }
+    }
 }
