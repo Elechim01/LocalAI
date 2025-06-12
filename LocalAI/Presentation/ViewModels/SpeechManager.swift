@@ -38,5 +38,9 @@ import AVKit
         synthesizer.stopSpeaking(at: .immediate)
     }
     
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        print("Finish")
+    }
+    
     
 }

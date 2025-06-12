@@ -22,37 +22,53 @@ struct SettingsView: View {
         alpha: 1)
     
     var body: some View {
-        VStack(alignment: .center, spacing: 10) {
-            Text("Python")
-                .font(.title2)
+        VStack(alignment: .leading, spacing: 20) {
             
-            Text("Inserisci il path di python in modo da poter collegare LocalAI con l'interprete python")
-                .font(.body)
-                .padding(.horizontal)
+            GroupBox(label: Label("Configurazione Python", systemImage: "terminal")) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Inserisci il percorso dell'interprete Python per collegarlo con LocalAI.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    TextField("Path Python (es. /usr/local/lib/libpython3.10.dylib)", text: $pythonPathData)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .font(.system(size: 13, design: .monospaced))
+                    
+                    Text("⚠️ Deve terminare con `.dylib`, ad esempio `lib/libpython3.10.dylib`.")
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                }
+                .padding(8)
+            }
             
-            TextField("Path Python", text: $pythonPathData)
-                .padding(.horizontal)
-                
+            GroupBox(label: Label("Aspetto AI", systemImage: "paintpalette")) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Scegli il colore del testo visualizzato per l'AI.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    ColorPicker("Colore del testo", selection: Binding(get: {
+                        Color(hex: textAiColor) ?? Color(colorInitial)
+                    }, set: { color in
+                        textAiColor = color.toHex(includeAlpha: true) ?? "#FF0000"
+                    }))
+                    .labelsHidden()
+                }
+                .padding(8)
+            }
             
-            Text("NB. il path di python deve terminare con un .dylib\nlib/libpython3.10.dylib")
-                .font(.subheadline)
-                Divider()
+            GroupBox(label: Label("Sicurezza", systemImage: "lock.shield")) {
+                Toggle("Attiva la password per l'AI", isOn: $attivaPassword)
+                    .toggleStyle(SwitchToggleStyle())
+                    .padding(.top, 5)
+            }
             
-            Text("Scegli il colore del testo dell AI")
-                .font(.title2)
-            
-            ColorPicker("Seleziona il colore", selection: Binding(get: {
-                Color(hex:textAiColor) ?? Color(colorInitial)
-            }, set: { color in
-                textAiColor = color.toHex(includeAlpha: true) ?? "#FF0000"
-            }))
-            
-           Divider()
-            Toggle("attiva la password per l'AI", isOn: $attivaPassword)
             Spacer()
         }
-        .frame(width: width,height: height)
+        .padding(20)
+        .frame(width: width, height: height)
     }
+
 }
 
 #Preview {

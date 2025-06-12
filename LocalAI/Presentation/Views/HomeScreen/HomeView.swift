@@ -15,72 +15,87 @@ struct HomeView: View {
     var body: some View {
         @Bindable var model = contentViewModel
         VStack(spacing: 16) {
-            // Aggiungi la vista SpeechToTextView con il binding
-            SpeechToTextView(transcript: $model.textRequest, nameAI: model.selectedAIModel?.nameModel ?? "")
-                .environment(speechToTextViewModel)
-                .frame(height: 250)
-                // Altezza personalizzabile
-            
-           /* TextField("Text per AI", text: $model.textRequest)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding(.horizontal)
-            */
-            
-            HStack {
-                Button(action: toggleRecord) {
-                    HStack {
-                        Image(systemName: speechToTextViewModel.isRecording ? "stop.fill" : "mic.fill")
-                        Text(speechToTextViewModel.isRecording ? "Stop" : "Start")
-                        
-                    }
-                    .padding()
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(PlainButtonStyle())
-                .background(
-                    speechToTextViewModel.isRecording ? Layout.RecordButton.stopRecordingColor : Layout.RecordButton.startRecordingColor
-                )
-                .cornerRadius(Layout.RecordButton.cornerRadius)
-                
-            
-            Button(action: {
-                guard !contentViewModel.textRequest.isEmpty, !speechToTextViewModel.isRecording else { return }
-                self.contentViewModel.callAI()
-            }) {
-                HStack {
-                    
-                    Text(contentViewModel.isLoading ? contentViewModel.statusLoading : "Invia alla AI")
-                }
-                .padding()
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(PlainButtonStyle())
-            .background(Color.pink)
-            .cornerRadius(10)
-            .disabled(contentViewModel.textRequest.isEmpty || contentViewModel.isLoading || speechToTextViewModel.isRecording)
-            }
-            
-            if contentViewModel.isLoading {
-                ProgressView()
-            }
-            
             ScrollView {
-                Text(contentViewModel.animatedText)
-                    .font(.system(size: 20, weight: .regular, design: .rounded))
-                    .multilineTextAlignment(.leading)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .onAppear(perform: contentViewModel.prepareInitialText)
-            .onChange(of: contentViewModel.coordinator.speechManager.spokenWordRanges, { oldValue, newValue in
-                withAnimation(.easeIn(duration: 0.1)) {
-                    contentViewModel.updateAnimatedText()
+                
+                
+                // Aggiungi la vista SpeechToTextView con il binding
+                SpeechToTextView(transcript: $model.textRequest, nameAI: model.selectedAIModel?.nameModel ?? "")
+                    .environment(speechToTextViewModel)
+                
+                // Altezza personalizzabile
+                
+                /* TextField("Text per AI", text: $model.textRequest)
+                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                 .padding(.horizontal)
+                 */
+                
+                HStack {
+                    ModelButton(title: speechToTextViewModel.isRecording ? "Stop" : "Start" ,
+                                imageName: speechToTextViewModel.isRecording ? "stop.fill" : "mic.fill",
+                                customGradient:  speechToTextViewModel.isRecording ? ModelButtonGradients.redGradient : ModelButtonGradients.greenGradient,
+                                action: toggleRecord)
+                    /*
+                     Button(action: toggleRecord) {
+                     HStack {
+                     Image(systemName: speechToTextViewModel.isRecording ? "stop.fill" : "mic.fill")
+                     Text(speechToTextViewModel.isRecording ? "Stop" : "Start")
+                     
+                     }
+                     .padding()
+                     .contentShape(Rectangle())
+                     }
+                     .buttonStyle(PlainButtonStyle())
+                     .background(
+                     speechToTextViewModel.isRecording ? Layout.RecordButton.stopRecordingColor : Layout.RecordButton.startRecordingColor
+                     )
+                     .cornerRadius(Layout.RecordButton.cornerRadius)
+                     */
+                    
+                    ModelButton(title: contentViewModel.isLoading ? contentViewModel.statusLoading : "Invia alla AI") {
+                        guard !contentViewModel.textRequest.isEmpty, !speechToTextViewModel.isRecording else { return }
+                        self.contentViewModel.callAI()
+                    }
+                    .disabled(contentViewModel.textRequest.isEmpty ||
+                              /*  Button(action: {
+                               
+                               }) {
+                               HStack {
+                               
+                               Text()
+                               }
+                               .padding()
+                               .contentShape(Rectangle())
+                               }
+                               .buttonStyle(PlainButtonStyle())
+                               .background(Color.pink)
+                               .cornerRadius(10)
+                               */
+                              contentViewModel.isLoading || speechToTextViewModel.isRecording)
                 }
-               
-            })
-            .frame(maxHeight: .infinity)
+                
+                if contentViewModel.isLoading {
+                    ProgressView()
+                }
+                
+                ScrollView {
+                    Text(contentViewModel.animatedText)
+                        .font(.system(size: 20, weight: .regular, design: .rounded))
+                        .multilineTextAlignment(.leading)
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .onAppear(perform: contentViewModel.prepareInitialText)
+                .onChange(of: contentViewModel.coordinator.speechManager.spokenWordRanges, { oldValue, newValue in
+                    withAnimation(.easeIn(duration: 0.1)) {
+                        contentViewModel.updateAnimatedText()
+                    }
+                    
+                })
+                .frame(maxHeight: .infinity)
+            }
         }
         .padding()
+        
     }
     
     private func toggleRecord() {

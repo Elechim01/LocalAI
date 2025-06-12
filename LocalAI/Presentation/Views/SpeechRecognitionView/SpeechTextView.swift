@@ -13,7 +13,7 @@ import SwiftUI
         static let spacing: CGFloat = 20.0
     }
     enum ScrollContainer {
-        static let height: CGFloat = 100.0
+        static let height: CGFloat = 200.0
         static let borderWidth: CGFloat = 1.0
         static let borderColor: Color = .white
     }
@@ -34,31 +34,43 @@ struct SpeechToTextView: View {
     
     var body: some View {
         @Bindable var model = viewModel
-        VStack(spacing: Layout.Container.spacing) {
-            Text("Parla con l'AI \(nameAI)")
-                .font(.title)
+
+        VStack{
+            // Titolo
+            
+            TitleView(title: "Parla con l'AI \(nameAI)")
+
+            // TextEditor in ScrollView con aspetto moderno
             ScrollView {
                 TextEditor(text: $model.transcript)
-                        .padding(10)
-                        .frame(maxWidth: .infinity, minHeight: Layout.ScrollContainer.height)
-                        .cornerRadius(8)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Layout.ScrollContainer.borderColor, lineWidth: Layout.ScrollContainer.borderWidth)
-                        )
+                    .font(.system(size: 14, design: .monospaced))
+                    .padding(12)
+                    .frame(maxWidth: .infinity, minHeight: 200)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color(NSColor.textBackgroundColor))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1)
+                    )
+                    .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+                    .padding(.horizontal)
             }
             .frame(height: Layout.ScrollContainer.height)
-            .border(Layout.ScrollContainer.borderColor, width: Layout.ScrollContainer.borderWidth)
-            .padding()
+            .padding(.bottom)
             .onChange(of: viewModel.transcript) {
                 self.transcript = $1
             }
+            
+            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()
-       // .background(Layout.Container.background)
+//        .background(Color(NSColor.windowBackgroundColor))
         .foregroundStyle(Layout.Container.fontColor)
     }
+
     
    
 }

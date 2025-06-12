@@ -24,12 +24,11 @@ struct ContentView: View {
                 VStack(alignment: .leading) {
                     List(NavigationRoute.allCases,id:\.hashValue) { element in
                         
-                        CustomButton(falseColor: element.getColor) {
+                        CustomButton(isSelected: .constant(navigationRoute == element),
+                                     imageName: element.image,
+                                     titleButton: element.name) {
                             navigationRoute = element
-                        } label: {
-                            Text(element.name)
                         }
-                        
                     }
                 }
             }, detail: {
@@ -38,7 +37,7 @@ struct ContentView: View {
                     HomeView()
                         .environment(speechToTextViewModel)
                         .environment(contentViewModel)
-                case .Impostazioni:
+                case .ModelliAI:
                   ModelScreen()
                         .environment(contentViewModel)
                 case .Voices:
@@ -59,7 +58,7 @@ struct ContentView: View {
 
 enum NavigationRoute: CaseIterable {
     case AIChat
-    case Impostazioni
+    case ModelliAI
     case Voices
     
     
@@ -67,23 +66,21 @@ enum NavigationRoute: CaseIterable {
         switch self {
         case .AIChat:
             return "AIChat"
-        case .Impostazioni:
+        case .ModelliAI:
             return "Modelli"
         case .Voices:
             return "Voices"
         }
     }
     
-    var getColor: Color {
+    var image: String {
         switch self {
         case .AIChat:
-            Color.green
-        case .Impostazioni:
-            Color.pink
+            return "brain"
+        case .ModelliAI:
+            return "square.stack.3d.up"
         case .Voices:
-            Color.orange
+            return "waveform"
         }
     }
-    
-    
 }

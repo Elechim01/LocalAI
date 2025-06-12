@@ -15,12 +15,19 @@ struct LocalAIApp: App {
     var body: some Scene {
         WindowGroup {
             if(pythonPathData.isEmpty) {
-                WelcomeScreen()
+                ZStack {
+                BackgroundAuroraView()
+                    WelcomeScreen()
+                }
             } else {
-                ContentView()
+                ZStack {
+                    AnimatedBackground()
+                    ContentView()
+                }   
             }
         }
         .windowStyle(HiddenTitleBarWindowStyle())
+       
         .commands {
             CommandGroup(replacing: .appSettings) {
                 Button("Impostazioni"){
@@ -59,3 +66,66 @@ class AppDelegate: NSObject,NSApplicationDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 }
+
+struct AnimatedBackground: View {
+    @State private var animate = false
+
+    var body: some View {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                animate
+                    ? Color(red: 50/255, green: 100/255, blue: 90/255)   // verde bottiglia soft
+                    : Color(red: 40/255, green: 90/255, blue: 80/255),   // verde-blu scuro
+                animate
+                    ? Color(red: 40/255, green: 80/255, blue: 120/255)   // blu fumo
+                    : Color(red: 30/255, green: 70/255, blue: 110/255)   // blu notte chiaro
+            ]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: animate)
+        .onAppear {
+            animate.toggle()
+        }
+        .edgesIgnoringSafeArea(.all)
+    }
+}
+
+struct BackgroundAuroraView: View {
+    @State private var animate = false
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(red: 0.2, green: 0.6, blue: 0.4),
+                        Color(red: 0.2, green: 0.4, blue: 0.6)
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            gradient: Gradient(colors: [
+                                Color.white.opacity(0.08),
+                                Color.clear
+                            ]),
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: 300
+                        )
+                    )
+                    .frame(width: 300, height: 300)
+                    .offset(x: animate ? geo.size.width * 0.6 : geo.size.width * 0.1,
+                            y: animate ? geo.size.height * 0.2 : geo.size.height * 0.6)
+                    .onAppear { animate = true }
+                    .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: animate)
+            }
+            .edgesIgnoringSafeArea(.all)
+        }
+    }
+}
+

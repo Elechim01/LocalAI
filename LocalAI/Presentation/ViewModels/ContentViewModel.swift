@@ -28,6 +28,7 @@ import AVKit
     var voices: [AVSpeechSynthesisVoice] = []
     private let synthesizer = AVSpeechSynthesizer()
     var voiceSelected: AVSpeechSynthesisVoice?
+    var voiceId: String?
     
     init(coordinator: AppCordinatorProtocol) {
         self.coordinator = coordinator
@@ -168,8 +169,8 @@ import AVKit
                 var aiModel =  row.map ({ AIInternalModel(row: $0,header:row.first)})
                 
                 aiModel.removeFirst()
-                let setAIModel = Set(aiModel)
-                self.listModel = Array(setAIModel)
+//                let setAIModel = Set(aiModel)
+                self.listModel = aiModel
             }
         }
     }
@@ -217,6 +218,8 @@ import AVKit
         let phrase = "Ciao sono \(voice.name.replacingOccurrences(of: " (Premium)", with: "")). Sono qui per parlare e leggere i messaggi."
         let utterance = AVSpeechUtterance(string: phrase)
         utterance.voice = voice
+        self.voiceId = voice.identifier
+        
         
         // Configurazione ottimale
         utterance.rate = 0.5
